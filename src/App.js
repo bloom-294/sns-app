@@ -3,7 +3,7 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 
-function App() {
+const App = () => {
   return (
     <BrowserRouter>
       <div className="App">
