@@ -5,6 +5,7 @@ import { SideMenu } from "../components/SideMenu.js"
 import { postRepository } from "../repositories/post.js";
 import { Post } from "../components/Post.js";
 import { Pagination } from "../components/Pagination.js";
+import { authRepository } from "../repositories/auth.js";
 
 const limit = 5;
 
@@ -12,7 +13,11 @@ const Home = () => {
   const [content, setContent] = useState("");
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
-  const { currentUser } = useContext(SessionContext);
+  const { currentUser, setCurrentUser } = useContext(SessionContext);
+
+  useEffect(() => {
+    fetchPosts();
+  },[]);
 
   const createPost = async() => {
     const post = await postRepository.create(content, currentUser.id);
@@ -45,9 +50,10 @@ const Home = () => {
     setPosts(posts.filter((post) => post.id !== postId ))
   }
 
-  useEffect(() => {
-    fetchPosts();
-  },[]);
+  const signout = async() => {
+    await authRepository.Signout();
+    setCurrentUser(null);
+  }
 
   if(currentUser == null) return <Navigate replace to="/signin" />;
 
@@ -56,7 +62,12 @@ const Home = () => {
       <header className="bg-white p-8">
         <div className="container mx-auto flex items-center justify-between px-5">
           <h1 className="text-3xl font-bold text-[#726E68]">SNS&nbsp;APP</h1>
-          <button className="text-[#726E68] text-md hover:text-red-800">ログアウト</button>
+          <button 
+            onClick={signout}
+            className="text-[#726E68] text-md hover:text-red-800"
+          >
+            ログアウト
+          </button>
         </div>
       </header>
       <div className="container mx-auto mt-6 p-4">
